@@ -1,0 +1,55 @@
+.temperature-details {
+    margin: 1rem 0;
+  }
+  
+  .status {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+    color: cyan;
+  }
+  
+  .icon-img {
+    width: 80px;
+  }
+  
+  .temperature {
+    font-size: 4rem;
+    color: inherit;
+  }
+  
+  .details-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1rem 0;
+    /* width: 80%; */
+  }
+  
+  .details-box {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .icon {
+    margin-right: 0.5rem;
+  }
+  
+  .rise-set-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+  }
+  
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.5rem;
+  }
+  
+  .separator {
+    padding: 0 0.5rem;
+  }

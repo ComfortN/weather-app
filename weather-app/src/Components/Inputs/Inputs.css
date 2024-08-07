@@ -33,3 +33,9 @@
     color: white;
     
   }
+
+    @media (max-width: 620px) {
+        .input-container {
+            flex-direction: column;
+        }
+    }

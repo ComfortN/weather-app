@@ -3,6 +3,7 @@ import './App.css';
 import TopButtons from './Components/TopBottons/TopButtons';
 import Inputs from './Components/Inputs/Inputs';
 import TimeAndLocation from './Components/TimeAndLocation/TimeAndLocation';
+import TemperatureAndDetails from './Components/TemperatureAndDetails/TemperatureAndDetails';
 import { Container } from '@mui/material';
 
 function App() {
@@ -12,8 +13,8 @@ function App() {
       <TopButtons />
        <Inputs />
       <TimeAndLocation />
-      {/*<TemperatureAndDetails />
-      <Forecast title="hourly forecast" />
+      <TemperatureAndDetails />
+      {/*<Forecast title="hourly forecast" />
       <Forecast title="daily forecast" /> */}
     </Container>
   

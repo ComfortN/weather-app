@@ -2,4 +2,17 @@
     margin: 1rem 0;
     display: flex;
     justify-content: space-around;
+    /* flex-wrap: wrap; Allows buttons to wrap to the next line */
+  }
+  
+  .top-buttons .city-button {
+    margin: 0.5rem; /* Adds some margin around each button */
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .top-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
   }
