@@ -1,0 +1,19 @@
+.time-and-location {
+    margin: 1rem 0;
+  }
+  
+  .time-and-location-box {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0;
+  }
+  
+  .time-text {
+    font-size: 1.25rem;
+    color: white;
+  }
+  
+  .location-text {
+    font-size: 2rem;
+    color: white;
+  }
