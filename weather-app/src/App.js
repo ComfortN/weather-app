@@ -6,6 +6,8 @@ import Inputs from './Components/Inputs/Inputs';
 import TemperatureAndDetails from './Components/TemperatureAndDetails/TemperatureAndDetails';
 import TimeAndLocation from './Components/TimeAndLocation/TimeAndLocation';
 import TopButtons from './Components/TopBottons/TopButtons';
+import TermsAndConditions from './Components/TermsAndConditions/TermsAndConditions';
+import CookiesConsent from './Components/CookiesConsent/CookiesConsent';
 import { getForecastData, getForecastDataByCoordinates, getWeatherData, getWeatherDataByCoordinates } from './services/weatherService';
 
 
@@ -17,6 +19,8 @@ const [city, setCity] = useState('');
 const [unit, setUnit] = useState('metric');
 const [location, setLocation] = useState(null);
 const [isOffline, setIsOffline] = useState(!navigator.onLine);
+const [termsAccepted, setTermsAccepted] = useState(localStorage.getItem('termsAccepted') === 'true');
+
 
   useEffect(() => {
     const handleOnlineStatus = () => setIsOffline(!navigator.onLine);
@@ -55,11 +59,13 @@ useEffect(() => {
 
 
 useEffect(() => {
+  if (!termsAccepted) return;
+
   const fetchData = async () => {
     if (navigator.onLine){
       try {
       if (city) {
-        
+
         const weatherData = await getWeatherData(city, unit);
         console.log('Weather: ', weatherData)
         setWeather(weatherData);
@@ -103,11 +109,21 @@ useEffect(() => {
   };
 
   fetchData();
-}, [city, location, unit]);
+}, [city, location, unit, termsAccepted]);
 
   return (
     
       <Container maxWidth="md" className="container">
+        {!termsAccepted && (
+        <TermsAndConditions
+          open={!termsAccepted}
+          onClose={() => setTermsAccepted(false)}
+          onAccept={() => {
+            localStorage.setItem('termsAccepted', 'true');
+            setTermsAccepted(true);
+          }}
+        />
+      )}
         {isOffline && (
         <Typography variant="body2" color="error" align="center">
           You are offline.
@@ -119,6 +135,7 @@ useEffect(() => {
       {weather && <TemperatureAndDetails weather={weather} unit={unit} />}
       {forecast && <Forecast title="hourly forecast" forecast={forecast} unit={unit} />}
       {forecast && <Forecast title="daily forecast" forecast={forecast} unit={unit} />}
+      <CookiesConsent />
     </Container>
   
   );
