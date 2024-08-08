@@ -2,14 +2,23 @@
     margin: 1rem 0;
     display: flex;
     justify-content: space-around;
-    /* flex-wrap: wrap; Allows buttons to wrap to the next line */
+     /* flex-wrap: wrap; */
   }
   
   .top-buttons .city-button {
-    margin: 0.5rem; /* Adds some margin around each button */
+    margin: 0.5rem;
+  }
+
+  .add-city .MuiTextField-root {
+    border: white;
+
+  }
+
+  .add-city .adding-city{
+    color: white;
   }
   
-  /* Responsive design */
+  
   @media (max-width: 768px) {
     .top-buttons {
       flex-direction: column;

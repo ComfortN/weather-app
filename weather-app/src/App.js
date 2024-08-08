@@ -1,4 +1,4 @@
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import Forecast from './Components/Forecast/Forecast';
@@ -16,6 +16,18 @@ const [forecast, setForecast] = useState(null);
 const [city, setCity] = useState('');
 const [unit, setUnit] = useState('metric');
 const [location, setLocation] = useState(null);
+const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const handleOnlineStatus = () => setIsOffline(!navigator.onLine);
+    window.addEventListener('online', handleOnlineStatus);
+    window.addEventListener('offline', handleOnlineStatus);
+
+    return () => {
+      window.removeEventListener('online', handleOnlineStatus);
+      window.removeEventListener('offline', handleOnlineStatus);
+    };
+  }, []);
 
 
 useEffect(() => {
@@ -44,27 +56,50 @@ useEffect(() => {
 
 useEffect(() => {
   const fetchData = async () => {
-    try {
+    if (navigator.onLine){
+      try {
       if (city) {
+        
         const weatherData = await getWeatherData(city, unit);
         console.log('Weather: ', weatherData)
         setWeather(weatherData);
+        localStorage.setItem('weather', JSON.stringify(weatherData));
 
         const forecastData = await getForecastData(city, unit);
         console.log('Forecast: ', forecastData);
         setForecast(forecastData);
+        localStorage.setItem('forecast', JSON.stringify(forecastData));
+
       } else if (location) {
+
         const { lat, lon } = location;
+
         const weatherData = await getWeatherDataByCoordinates(lat, lon, unit);
         setWeather(weatherData);
+        localStorage.setItem('weather', JSON.stringify(weatherData));
 
         const forecastData = await getForecastDataByCoordinates(lat, lon, unit);
         setForecast(forecastData);
+        localStorage.setItem('forecast', JSON.stringify(forecastData));
       }
       
     } catch (error) {
       console.error(error);
     }
+    } else {
+      // Load data from localStorage when offline
+      const cachedWeather = localStorage.getItem('weather');
+      const cachedForecast = localStorage.getItem('forecast');
+
+      if (cachedWeather) {
+        setWeather(JSON.parse(cachedWeather));
+      }
+
+      if (cachedForecast) {
+        setForecast(JSON.parse(cachedForecast));
+      }
+    }
+    
   };
 
   fetchData();
@@ -73,8 +108,13 @@ useEffect(() => {
   return (
     
       <Container maxWidth="md" className="container">
+        {isOffline && (
+        <Typography variant="body2" color="error" align="center">
+          You are offline.
+        </Typography>
+      )}
       <TopButtons setCity={setCity} />
-      <Inputs setCity={setCity} unit={unit} setUnit={setUnit} />
+      <Inputs setCity={setCity} unit={unit} setUnit={setUnit} setLocation={setLocation}/>
       {weather && <TimeAndLocation weather={weather} />}
       {weather && <TemperatureAndDetails weather={weather} unit={unit} />}
       {forecast && <Forecast title="hourly forecast" forecast={forecast} unit={unit} />}

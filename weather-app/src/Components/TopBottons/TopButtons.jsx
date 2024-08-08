@@ -1,15 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './TopButtons.css'
-import { Box, Button } from '@mui/material';
+import { Box, Button,  TextField, IconButton  } from '@mui/material';
+import { AddCircleOutline } from '@mui/icons-material';
 
 export default function TopButtons({ setCity }) {
-    const cities = [
-        { id: 1, title: 'Johannesburg' },
-        { id: 2, title: 'Pretoria' },
-        { id: 3, title: 'Cape town' },
-        { id: 4, title: 'Germiston' },
-        { id: 5, title: 'Soweto' },
-      ];
+    const [cities, setCities] = useState([]);
+
+      const [newCity, setNewCity] = useState('');
+
+  const addCity = () => {
+    if (newCity.trim()) {
+      setCities([...cities, { id: cities.length + 1, title: newCity }]);
+      setNewCity(''); // clear input after adding
+    }
+  };
 
   return (
      <Box className="top-buttons">
@@ -18,6 +22,17 @@ export default function TopButtons({ setCity }) {
           {city.title}
         </Button>
       ))}
+
+<Box className="add-city">
+        <TextField
+          value={newCity}
+          onChange={(e) => setNewCity(e.target.value)}
+          placeholder="Add city"
+        />
+        <IconButton className='adding-city' onClick={addCity}>
+          <AddCircleOutline />
+        </IconButton>
+      </Box>
     </Box>
   )
 }
