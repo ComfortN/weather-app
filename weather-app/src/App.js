@@ -14,14 +14,15 @@ function App() {
 const [weather, setWeather] = useState(null);
 const [forecast, setForecast] = useState(null);
 const [city, setCity] = useState('Johannesburg');
+const [unit, setUnit] = useState('metric');
 
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const weatherData = await getWeatherData(city);
+      const weatherData = await getWeatherData(city, unit);
       console.log('Weather: ', weatherData)
       setWeather(weatherData);
-      const forecastData = await getForecastData(city);
+      const forecastData = await getForecastData(city, unit);
       console.log('Forecast: ', forecastData);
       setForecast(forecastData);
     } catch (error) {
@@ -30,17 +31,17 @@ useEffect(() => {
   };
 
   fetchData();
-}, [city]);
+}, [city, unit]);
 
   return (
     
       <Container maxWidth="md" className="container">
       <TopButtons setCity={setCity} />
-      <Inputs setCity={setCity}  />
+      <Inputs setCity={setCity} unit={unit} setUnit={setUnit} />
       {weather && <TimeAndLocation weather={weather} />}
-      {weather && <TemperatureAndDetails weather={weather} />}
-      {forecast && <Forecast title="hourly forecast" forecast={forecast} />}
-      {forecast && <Forecast title="daily forecast" forecast={forecast} />}
+      {weather && <TemperatureAndDetails weather={weather} unit={unit} />}
+      {forecast && <Forecast title="hourly forecast" forecast={forecast} unit={unit} />}
+      {forecast && <Forecast title="daily forecast" forecast={forecast} unit={unit} />}
     </Container>
   
   );

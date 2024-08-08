@@ -3,11 +3,16 @@ import './Inputs.css';
 import { Box, TextField, IconButton, Button } from '@mui/material';
 import { SearchOutlined, LocationOnOutlined } from '@mui/icons-material';
 
-export default function Inputs({ setCity }) {
+export default function Inputs({ setCity, unit, setUnit }) {
   const [input, setInput] = useState('');
 
   const handleSearch = () => {
     setCity(input);
+  };
+
+
+  const handleUnitChange = (newUnit) => {
+    setUnit(newUnit);
   };
 
   return (
@@ -30,9 +35,9 @@ export default function Inputs({ setCity }) {
         </IconButton>
       </Box>
       <Box className="unit-buttons">
-        <Button>°C</Button>
+        <Button onClick={() => handleUnitChange('metric')} className={unit === 'metric' ? 'active' : ''}>°C</Button>
         |
-        <Button>°F</Button>
+        <Button onClick={() => handleUnitChange('imperial')} className={unit === 'imperial' ? 'active' : ''}>°F</Button>
       </Box>
     </Box>
   );

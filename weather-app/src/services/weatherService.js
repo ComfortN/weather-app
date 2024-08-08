@@ -81,7 +81,7 @@
 
 
 
-export const getWeatherData = async (city) => {
+export const getWeatherData = async (city, unit = 'metric') => {
     const apiKey = '4478c42dca88eaf97dab48e705935e9f';
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
     if (!response.ok) {
@@ -91,7 +91,7 @@ export const getWeatherData = async (city) => {
     return data;
   };
   
-  export const getForecastData = async (city) => {
+  export const getForecastData = async (city, unit = 'metric') => {
     const apiKey = '4478c42dca88eaf97dab48e705935e9f';
     const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`);
     if (!response.ok) {

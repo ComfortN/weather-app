@@ -2,7 +2,9 @@ import React from 'react';
 import './Forecast.css';
 import { Box, Typography, Divider, Grid } from '@mui/material';
 
-export default function Forecast({ title, forecast }) {
+const convertToFahrenheit = (celsius) => (celsius * 9/5) + 32;
+
+export default function Forecast({ title, forecast,unit }) {
   // is forecast  hourly or daily
   const isHourly = title.includes('hourly');
   const isDaily = title.includes('daily');
@@ -17,6 +19,8 @@ export default function Forecast({ title, forecast }) {
       .slice(0, 5); // Show first 5 days
   }
 
+  const tempUnit = unit === 'metric' ? '°C' : '°F';
+  
   return (
     <Box className="forecast-container">
       <Box className="forecast-header">
@@ -26,23 +30,26 @@ export default function Forecast({ title, forecast }) {
       </Box>
       <Divider className="forecast-divider" />
       <Grid container justifyContent="space-between" className="forecast-grid">
-        {forecastItems.map((data, index) => (
-          <Grid item key={index} className="forecast-item">
-            <Typography variant="body2" className="forecast-time">
-              {isHourly
-                ? new Date(data.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                : new Date(data.dt * 1000).toLocaleDateString('en-US', { weekday: 'long' })}
-            </Typography>
-            <img
-              src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
-              alt=""
-              className="forecast-icon"
-            />
-            <Typography variant="body1" className="forecast-temp">
-              {Math.round(data.main.temp)}°
-            </Typography>
-          </Grid>
-        ))}
+        {forecastItems.map((data, index) => {
+          const temp = unit === 'metric' ? data.main.temp : convertToFahrenheit(data.main.temp);
+          return (
+            <Grid item key={index} className="forecast-item">
+              <Typography variant="body2" className="forecast-time">
+                {isHourly
+                  ? new Date(data.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                  : new Date(data.dt * 1000).toLocaleDateString('en-US', { weekday: 'long' })}
+              </Typography>
+              <img
+                src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
+                alt=""
+                className="forecast-icon"
+              />
+              <Typography variant="body1" className="forecast-temp">
+                {Math.round(temp)}{tempUnit}
+              </Typography>
+            </Grid>
+          );
+        })}
       </Grid>
     </Box>
   );
