@@ -1,9 +1,15 @@
-import React from 'react'
-import './Inputs.css'
+import React, { useState } from 'react';
+import './Inputs.css';
 import { Box, TextField, IconButton, Button } from '@mui/material';
-import { SearchOutlined, LocationOnOutlined } from '@mui/icons-material'
+import { SearchOutlined, LocationOnOutlined } from '@mui/icons-material';
 
-export default function Inputs() {
+export default function Inputs({ setCity }) {
+  const [input, setInput] = useState('');
+
+  const handleSearch = () => {
+    setCity(input);
+  };
+
   return (
     <Box className="inputs">
       <Box className="input-container">
@@ -12,9 +18,11 @@ export default function Inputs() {
           fullWidth
           variant="outlined"
           placeholder="search for city...."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
           InputProps={{ className: 'input-field' }}
         />
-        <IconButton className="icon-button">
+        <IconButton className="icon-button" onClick={handleSearch}>
           <SearchOutlined />
         </IconButton>
         <IconButton className="icon-button">
@@ -27,5 +35,5 @@ export default function Inputs() {
         <Button>°F</Button>
       </Box>
     </Box>
-  )
+  );
 }

@@ -13,11 +13,12 @@
   
   .input-field {
     flex-grow: 1;
+    background-color: white;
     margin-right: 0.5rem;
   }
   
   .input-field input {
-    color: white;
+    color: gray;
   }
   
   .icon-button {

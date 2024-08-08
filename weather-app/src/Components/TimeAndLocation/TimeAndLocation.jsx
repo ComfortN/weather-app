@@ -2,19 +2,22 @@ import React from 'react';
 import './TimeAndLocation.css';
 import { Box, Typography } from '@mui/material';
 
-export default function TimeAndLocation() {
+export default function TimeAndLocation({ weather }) {
+  const { name, sys, dt } = weather;
+  const date = new Date(dt * 1000);
+
   return (
     <Box className="time-and-location" my={2}>
       <Box className="time-and-location-box" my={1}>
-        <Typography className="time-text" variant="h6" >
-          Wednesday, 31 May 2022 | Local time: 12:21 PM
+        <Typography className="time-text" variant="h6">
+          {date.toDateString()} | Local time: {date.toLocaleTimeString()}
         </Typography>
       </Box>
       <Box className="time-and-location-box" my={1}>
-        <Typography className="location-text" variant="h4" >
-          Johannesburg, JHB
+        <Typography className="location-text" variant="h4">
+          {name}, {sys.country}
         </Typography>
       </Box>
     </Box>
-  )
+  );
 }
