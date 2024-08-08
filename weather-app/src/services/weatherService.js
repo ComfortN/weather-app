@@ -100,4 +100,23 @@ export const getWeatherData = async (city, unit = 'metric') => {
     const data = await response.json();
     return data;
   };
+
+
+  export const getWeatherDataByCoordinates = async (lat, lon, unit) => {
+    const apiKey = '4478c42dca88eaf97dab48e705935e9f';
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=${unit}&appid=${apiKey}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch weather data');
+    }
+    return response.json();
+  };
+  
+  export const getForecastDataByCoordinates = async (lat, lon, unit) => {
+    const apiKey = '4478c42dca88eaf97dab48e705935e9f';
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=${unit}&appid=${apiKey}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch forecast data');
+    }
+    return response.json();
+  };
   
