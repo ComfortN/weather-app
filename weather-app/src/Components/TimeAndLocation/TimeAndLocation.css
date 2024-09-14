@@ -17,3 +17,10 @@
     font-size: 2rem;
     color: white;
   }
+
+
+  @media (max-width: 620px) {
+    .time-and-location .MuiTypography-root {
+      font-size: 0.9em;
+    }
+  }

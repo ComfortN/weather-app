@@ -35,7 +35,7 @@ export default function TemperatureAndDetails({ weather, unit }) {
         <Box>
           <Typography className="temperature" variant="h1">{Math.round(temperature)}{tempUnit}</Typography>
         </Box>
-        <Box>
+        <Box className="details-boxes">
           <Box className="details-box">
             <ThermostatOutlined size={18} className="icon" />
             <Typography variant="body1">Real feel: {Math.round(feelsLike)}{tempUnit}</Typography>

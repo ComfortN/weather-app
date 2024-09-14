@@ -53,3 +53,39 @@
   .separator {
     padding: 0 0.5rem;
   }
+
+  @media (max-width: 600px) {
+    .temperature {
+      font-size: 3rem;
+    }
+  
+    .details-container {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .details-boxes {
+      display: flex;
+      font-size: 1rem;
+      gap: 0.1em;
+    }
+    
+    .details-boxes .MuiTypography-root {
+      font-size: 0.8rem;
+
+    }
+  
+    .rise-set-container {
+      /* flex-direction: column; */
+      flex-wrap: wrap;
+      gap: 1em;
+    }
+  
+    .item {
+      margin: 0.25rem 0;
+    }
+  
+    .separator {
+      display: none;
+    }
+  }

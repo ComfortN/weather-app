@@ -47,3 +47,19 @@
   .forecast-temp {
     font-weight: 400;
   }
+
+
+  @media (max-width: 600px) {
+  .forecast-item {
+    flex-direction: column !important;
+  }
+  .forecast-time {
+    font-size: 0.75rem;
+  }
+  .forecast-icon {
+    width: 2.5rem;
+  }
+  .forecast-temp {
+    font-size: 1rem;
+  }
+}
