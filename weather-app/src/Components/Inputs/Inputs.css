@@ -11,18 +11,21 @@
   margin-right: 0.5rem;
 }
 
+
 .input-field {
   flex-grow: 1;
-  background-color: white;
+  /* background-color: white; */
   margin-right: 0.5rem;
+  border: solid white;
+  border-radius: 10px !important;
 }
 
-.input-field input {
+/* .input-field input {
   color: gray;
-}
+} */
 
 .icon-button {
-  color: white;
+  color: white !important;
 }
 
 .unit-buttons {
@@ -39,6 +42,16 @@
     .inputs {
       flex-direction: column;
       align-items: center;
+    }
+
+
+    .input-container{
+      width: 100%;
+    }
+
+
+    .input-field {
+      width: 100%;
     }
     
   }

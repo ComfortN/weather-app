@@ -11,16 +11,38 @@ import CookiesConsent from './Components/CookiesConsent/CookiesConsent';
 import { getForecastData, getForecastDataByCoordinates, getWeatherData, getWeatherDataByCoordinates } from './services/weatherService';
 
 
+const getBackgroundImage = (description) => {
+  switch (description.toLowerCase()) {
+    case 'clear sky':
+    case 'sunny':
+      return '/assets/images/sunny.jpeg';
+    case 'few clouds':
+    case 'scattered clouds':
+    case 'broken clouds':
+    case 'overcast clouds':
+      return '/assets/images/cloudy.jpeg';
+    case 'shower rain':
+    case 'light rain':
+    case 'rain':
+      return '/assets/images/rainy.jpeg';
+    case 'thunderstorm':
+      return '/assets/images/rainyV.jpeg';
+    case 'snow':
+      return '/assets/images/snow.jpeg';
+    default:
+      return '/assets/images/default.jpeg';
+  }
+};
 
 function App() {
-const [weather, setWeather] = useState(null);
-const [forecast, setForecast] = useState(null);
-const [city, setCity] = useState('');
-const [unit, setUnit] = useState('metric');
-const [location, setLocation] = useState(null);
-const [isOffline, setIsOffline] = useState(!navigator.onLine);
-const [termsAccepted, setTermsAccepted] = useState(localStorage.getItem('termsAccepted') === 'true');
-
+  const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState(null);
+  const [city, setCity] = useState('');
+  const [unit, setUnit] = useState('metric');
+  const [location, setLocation] = useState(null);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [termsAccepted, setTermsAccepted] = useState(localStorage.getItem('termsAccepted') === 'true');
+  const [backgroundImage, setBackgroundImage] = useState('/assets/images/default.jpg');
 
   useEffect(() => {
     const handleOnlineStatus = () => setIsOffline(!navigator.onLine);
@@ -33,88 +55,112 @@ const [termsAccepted, setTermsAccepted] = useState(localStorage.getItem('termsAc
     };
   }, []);
 
-
-useEffect(() => {
-  // Automatically detect user location
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude
-          });
-        },
-        (error) => {
-          console.error("Error getting location", error);
+  useEffect(() => {
+    const requestNotificationPermission = async () => {
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          console.log('Notification permission denied');
         }
-      );
-    } else {
-      console.log("Geolocation is not supported by this browser.");
+      }
+    };
+
+    requestNotificationPermission();
+  }, []);
+
+  useEffect(() => {
+    const getCurrentLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocation({
+              lat: position.coords.latitude,
+              lon: position.coords.longitude
+            });
+          },
+          (error) => {
+            console.error("Error getting location", error);
+          }
+        );
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    };
+
+    getCurrentLocation();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!termsAccepted) return;
+
+      if (navigator.onLine) {
+        try {
+          let weatherData;
+          let forecastData;
+
+          if (city) {
+            weatherData = await getWeatherData(city, unit);
+            forecastData = await getForecastData(city, unit);
+          } else if (location) {
+            const { lat, lon } = location;
+            weatherData = await getWeatherDataByCoordinates(lat, lon, unit);
+            forecastData = await getForecastDataByCoordinates(lat, lon, unit);
+          }
+
+          if (weatherData && forecastData) {
+            setWeather(weatherData);
+            setForecast(forecastData);
+
+            localStorage.setItem('weather', JSON.stringify(weatherData));
+            localStorage.setItem('forecast', JSON.stringify(forecastData));
+
+            checkForSevereWeatherAlerts(weatherData);
+
+            // const description = weatherData.weather[0].description;
+            // setBackgroundImage(getBackgroundImage(description));
+            const description = weatherData.weather[0].description;
+            document.body.style.backgroundImage = `url(${getBackgroundImage(description)})`;
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        const cachedWeather = localStorage.getItem('weather');
+        const cachedForecast = localStorage.getItem('forecast');
+
+        if (cachedWeather) {
+          setWeather(JSON.parse(cachedWeather));
+        }
+
+        if (cachedForecast) {
+          setForecast(JSON.parse(cachedForecast));
+        }
+      }
+    };
+
+    fetchData();
+  }, [city, location, unit, termsAccepted]);
+
+  const checkForSevereWeatherAlerts = (weatherData) => {
+    if (!('Notification' in window)) {
+      console.log('This browser does not support notifications.');
+      return;
+    }
+
+    if (weatherData.alerts && weatherData.alerts.length > 0) {
+      weatherData.alerts.forEach(alert => {
+        new Notification('Severe Weather Alert', {
+          body: `${alert.event}: ${alert.description}`,
+          icon: 'path/to/weather-icon.png', // Optional: add an icon for the notification
+        });
+      });
     }
   };
-
-  getCurrentLocation();
-}, []);
-
-
-useEffect(() => {
-  if (!termsAccepted) return;
-
-  const fetchData = async () => {
-    if (navigator.onLine){
-      try {
-      if (city) {
-
-        const weatherData = await getWeatherData(city, unit);
-        console.log('Weather: ', weatherData)
-        setWeather(weatherData);
-        localStorage.setItem('weather', JSON.stringify(weatherData));
-
-        const forecastData = await getForecastData(city, unit);
-        console.log('Forecast: ', forecastData);
-        setForecast(forecastData);
-        localStorage.setItem('forecast', JSON.stringify(forecastData));
-
-      } else if (location) {
-
-        const { lat, lon } = location;
-
-        const weatherData = await getWeatherDataByCoordinates(lat, lon, unit);
-        setWeather(weatherData);
-        localStorage.setItem('weather', JSON.stringify(weatherData));
-
-        const forecastData = await getForecastDataByCoordinates(lat, lon, unit);
-        setForecast(forecastData);
-        localStorage.setItem('forecast', JSON.stringify(forecastData));
-      }
-      
-    } catch (error) {
-      console.error(error);
-    }
-    } else {
-      // Load data from localStorage when offline
-      const cachedWeather = localStorage.getItem('weather');
-      const cachedForecast = localStorage.getItem('forecast');
-
-      if (cachedWeather) {
-        setWeather(JSON.parse(cachedWeather));
-      }
-
-      if (cachedForecast) {
-        setForecast(JSON.parse(cachedForecast));
-      }
-    }
-    
-  };
-
-  fetchData();
-}, [city, location, unit, termsAccepted]);
 
   return (
-    
-      <Container maxWidth="md" className="container">
-        {!termsAccepted && (
+    <Container maxWidth="md" className="container" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      {!termsAccepted && (
         <TermsAndConditions
           open={!termsAccepted}
           onClose={() => setTermsAccepted(false)}
@@ -124,24 +170,24 @@ useEffect(() => {
           }}
         />
       )}
-        {isOffline && (
+      {isOffline && (
         <Typography variant="body2" color="error" align="center">
           You are offline.
         </Typography>
       )}
       <TopButtons setCity={setCity} />
-      <Inputs setCity={setCity} unit={unit} setUnit={setUnit} setLocation={setLocation}/>
+      <Inputs setCity={setCity} unit={unit} setUnit={setUnit} setLocation={setLocation} />
       {weather && <TimeAndLocation weather={weather} />}
       {weather && <TemperatureAndDetails weather={weather} unit={unit} />}
       {forecast && <Forecast title="hourly forecast" forecast={forecast} unit={unit} />}
       {forecast && <Forecast title="daily forecast" forecast={forecast} unit={unit} />}
       <CookiesConsent />
     </Container>
-  
   );
 }
 
 export default App;
+
 
 
 

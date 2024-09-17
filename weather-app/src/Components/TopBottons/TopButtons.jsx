@@ -24,7 +24,7 @@ export default function TopButtons({ setCity }) {
       ))}
 
 <Box className="add-city">
-        <TextField
+        <TextField className='addCity'
           value={newCity}
           onChange={(e) => setNewCity(e.target.value)}
           placeholder="Add city"
